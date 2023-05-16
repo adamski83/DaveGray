@@ -1,0 +1,12 @@
+footer {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+	padding: 0.25em;
+	background-color: mediumblue;
+	color: aliceblue;
+}
+
+p {
+	font-size: 12px;
+}
