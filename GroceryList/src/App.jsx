@@ -1,40 +1,30 @@
 import React, { useState } from "react";
 import "./App.css";
 import { Header } from "./components/header/Header";
+import { SearchItem } from "./components/searchItem/SearchItem";
 import { AddItem } from "./components/addItem/AddItem";
 import { Content } from "./components/content/Content";
 import { Footer } from "./components/footer/Footer";
 
 export default function App() {
-	const [items, setItems] = useState([
-		{
-			id: 1,
-			checked: false,
-			item: "One half pound bag of Cocoa Covered Almonds Unsalted",
-		},
-		{
-			id: 2,
-			checked: false,
-			item: "Chocolate with salted Caramel",
-		},
-		{
-			id: 3,
-			checked: false,
-			item: "Crounchy bounty ",
-		},
-	]);
+	const [items, setItems] = useState(
+		// @ts-ignore
+		JSON.parse(localStorage.getItem("shoppinglist"))
+	);
+	const [search, setSearch] = useState("");
 
 	const [newItem, setNewItem] = useState("");
 
 	const setAndSaveItems = (newItems) => {
 		setItems(newItems);
-		localStorage.setItem("shoppinglis", JSON.stringify(newItems));
+		localStorage.setItem("shoppinglist", JSON.stringify(newItems));
 	};
 
 	const addItem = (item) => {
 		const id = items.length ? items[items.length - 1].id + 1 : 1;
 		const myNewItem = { id, checked: false, item };
 		const listItem = [...items, myNewItem];
+
 		setAndSaveItems(listItem);
 	};
 
@@ -53,7 +43,7 @@ export default function App() {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		if (!newItem) return;
-		console.log(newItem);
+		addItem(newItem);
 
 		setNewItem("");
 	};
@@ -68,10 +58,16 @@ export default function App() {
 				// @ts-ignore
 				handleSubmit={handleSubmit}
 			/>
-			<Content
-				items={items}
+			<SearchItem
 				// @ts-ignore
-				setItems={setItems}
+				search={search}
+				setSearch={setSearch}
+			/>
+			<Content
+				items={items.filter((item) =>
+					item.item.toLowerCase().includes(search.toLowerCase())
+				)}
+				// @ts-ignore
 				handleCheck={handleCheck}
 				handleDelete={handleDelete}
 			/>
