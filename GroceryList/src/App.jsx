@@ -1,31 +1,43 @@
-import React, { useState } from "react";
-import "./App.css";
-import { Header } from "./components/header/Header";
-import { SearchItem } from "./components/searchItem/SearchItem";
-import { AddItem } from "./components/addItem/AddItem";
-import { Content } from "./components/content/Content";
-import { Footer } from "./components/footer/Footer";
+// @ts-nocheck
+import React, { useState, useEffect } from 'react';
+import './App.css';
+import { Header } from './components/header/Header';
+import { SearchItem } from './components/searchItem/SearchItem';
+import { AddItem } from './components/addItem/AddItem';
+import { Content } from './components/content/Content';
+import { Footer } from './components/footer/Footer';
 
 export default function App() {
-	const [items, setItems] = useState(
-		// @ts-ignore
-		JSON.parse(localStorage.getItem("shoppinglist"))
-	);
-	const [search, setSearch] = useState("");
+	const API_URL = `http://localhost:3500/items`;
+	const [items, setItems] = useState([]);
+	const [search, setSearch] = useState('');
+	const [newItem, setNewItem] = useState('');
+	const [fetchError, setFetchError] = useState(null);
 
-	const [newItem, setNewItem] = useState("");
-
-	const setAndSaveItems = (newItems) => {
-		setItems(newItems);
-		localStorage.setItem("shoppinglist", JSON.stringify(newItems));
-	};
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await fetch(API_URL);
+				if (!response.ok) {
+					throw Error('Did not received expected data !');
+				}
+				const listItems = await response.json();
+				setItems(listItems);
+				setFetchError(null);
+			} catch (error) {
+				console.log(error.message);
+				setFetchError(error.message);
+			}
+		};
+		fetchData();
+	}, []);
 
 	const addItem = (item) => {
 		const id = items.length ? items[items.length - 1].id + 1 : 1;
 		const myNewItem = { id, checked: false, item };
 		const listItem = [...items, myNewItem];
 
-		setAndSaveItems(listItem);
+		setItems(listItem);
 	};
 
 	const handleCheck = (id) => {
@@ -33,11 +45,11 @@ export default function App() {
 		const listItems = items.map((item) =>
 			item.id === id ? { ...item, checked: !item.checked } : item
 		);
-		setAndSaveItems(listItems);
+		setItems(listItems);
 	};
 	const handleDelete = (id) => {
 		const listItems = items.filter((item) => item.id !== id);
-		setAndSaveItems(listItems);
+		setItems(listItems);
 	};
 
 	const handleSubmit = (e) => {
@@ -45,12 +57,12 @@ export default function App() {
 		if (!newItem) return;
 		addItem(newItem);
 
-		setNewItem("");
+		setNewItem('');
 	};
 
 	return (
-		<div className="App">
-			<Header title="Grocery" />
+		<div className='App'>
+			<Header title='Grocery' />
 			<AddItem
 				// @ts-ignore
 				newItem={newItem}
