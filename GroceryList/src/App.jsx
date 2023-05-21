@@ -13,22 +13,25 @@ export default function App() {
 	const [search, setSearch] = useState('');
 	const [newItem, setNewItem] = useState('');
 	const [fetchError, setFetchError] = useState(null);
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
 				const response = await fetch(API_URL);
 				if (!response.ok) {
-					throw Error('Did not received expected data !');
+					throw Error('Did not receive expected data !');
 				}
 				const listItems = await response.json();
 				setItems(listItems);
 				setFetchError(null);
 			} catch (error) {
-				console.log(error.message);
 				setFetchError(error.message);
+			} finally {
+				setIsLoading(false);
 			}
 		};
+
 		fetchData();
 	}, []);
 
@@ -41,7 +44,6 @@ export default function App() {
 	};
 
 	const handleCheck = (id) => {
-		console.log(`key: ${id}`);
 		const listItems = items.map((item) =>
 			item.id === id ? { ...item, checked: !item.checked } : item
 		);
@@ -75,14 +77,29 @@ export default function App() {
 				search={search}
 				setSearch={setSearch}
 			/>
-			<Content
-				items={items.filter((item) =>
-					item.item.toLowerCase().includes(search.toLowerCase())
+			<main>
+				{isLoading && <p>Loading items ...</p>}
+				{fetchError && (
+					<p
+						style={{
+							color: 'red',
+							fontSize: '28px',
+						}}>{`Error:${fetchError}`}</p>
 				)}
-				// @ts-ignore
-				handleCheck={handleCheck}
-				handleDelete={handleDelete}
-			/>
+				{!fetchError && !isLoading && (
+					<Content
+						items={items.filter((item) =>
+							item.item
+								.toLowerCase()
+								.includes(search.toLowerCase())
+						)}
+						// @ts-ignore
+						handleCheck={handleCheck}
+						handleDelete={handleDelete}
+					/>
+				)}
+			</main>
+
 			<Footer length={items.length} />
 		</div>
 	);

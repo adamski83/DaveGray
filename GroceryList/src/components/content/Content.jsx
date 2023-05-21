@@ -1,10 +1,10 @@
-import React from "react";
-import { ItemList } from "../itemList/ItemList";
-import "./Content.css";
+import React from 'react';
+import { ItemList } from '../itemList/ItemList';
+import './Content.css';
 
 export const Content = ({ items, handleCheck, handleDelete }) => {
 	return (
-		<main>
+		<>
 			{items.length ? (
 				<ItemList
 					items={items}
@@ -12,8 +12,8 @@ export const Content = ({ items, handleCheck, handleDelete }) => {
 					handleDelete={handleDelete}
 				/>
 			) : (
-				"no content to display"
+				'no content to display'
 			)}
-		</main>
+		</>
 	);
 };
