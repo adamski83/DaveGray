@@ -1,19 +1,19 @@
 {
-	"items": [
-		{
-			"id": 1,
-			"checked": false,
-			"item": "Kurczak"
-		},
-		{
-			"id": 2,
-			"checked": false,
-			"item": "Ryż"
-		},
-		{
-			"id": 3,
-			"checked": false,
-			"item": "Kreatyna"
-		}
-	]
+  "items": [
+    {
+      "id": 2,
+      "checked": false,
+      "item": "Ryż"
+    },
+    {
+      "id": 3,
+      "checked": false,
+      "item": "Kreatyna"
+    },
+    {
+      "id": 4,
+      "checked": false,
+      "item": "Ciasteczka"
+    }
+  ]
 }
